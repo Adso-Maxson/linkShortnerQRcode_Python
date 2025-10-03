@@ -29,6 +29,26 @@ class URLShortenerApp:
             "Git.io": {"method": "gitio", "reliable": False},  # Só GitHub
             "0x0.st": {"method": "nullpointer", "reliable": True},
             "Short.io": {"method": "shortio", "reliable": False},  # Precisa API
+            "Shrturi.com": {"method": "shrturi", "reliable": True},
+            "Cleanuri.com": {"method": "cleanuri", "reliable": True},
+            "Shortest.cx": {"method": "shortest", "reliable": True},
+            "T.ly": {"method": "tly", "reliable": True},
+            "Picsee.io": {"method": "picsee", "reliable": True},
+            "Kutt.it": {"method": "kutt", "reliable": True},
+            "Zws.im": {"method": "zws", "reliable": True},
+            "Tiny.cc": {"method": "tinycc", "reliable": True},
+            "Shorturl.at": {"method": "shorturl", "reliable": True},
+            "V.gd": {"method": "vgd", "reliable": True},
+            "Small.sx": {"method": "smallsx", "reliable": True},
+            "Link.sx": {"method": "linksx", "reliable": True},
+            "Hmm.sx": {"method": "hmmsx", "reliable": True},
+            "Pty.sx": {"method": "ptysx", "reliable": True},
+            "Sqzk.ru": {"method": "sqzk", "reliable": True},
+            
+            # Serviços que precisam de API key (marcados como não confiáveis para auto)
+            "Cutt.ly": {"method": "cuttly", "reliable": False},
+            "Bit.ly": {"method": "bitly", "reliable": False},
+            "Adf.ly": {"method": "adfly", "reliable": False},
         }
         
         self.setup_style()
@@ -194,6 +214,22 @@ class URLShortenerApp:
                 "Qps.ru": "http://qps.ru",
                 "Ouo.io": "http://ouo.io",
                 "0x0.st": "http://0x0.st",
+                 # NOVAS URLs ADICIONADAS:
+                "Shrturi.com": "https://shrturi.com",
+                "Cleanuri.com": "https://cleanuri.com",
+                "Shortest.cx": "https://shortest.cx",
+                "T.ly": "https://t.ly",
+                "Picsee.io": "https://picsee.io",
+                "Kutt.it": "https://kutt.it",
+                "Zws.im": "https://zws.im",
+                "Tiny.cc": "https://tiny.cc",
+                "Shorturl.at": "https://shorturl.at",
+                "V.gd": "https://v.gd",
+                "Small.sx": "https://small.sx",
+                "Link.sx": "https://link.sx",
+                "Hmm.sx": "https://hmm.sx",
+                "Pty.sx": "https://pty.sx",
+                "Sqzk.ru": "https://sqzk.ru",
             }
             
             if service_name in test_urls:
@@ -211,7 +247,7 @@ class URLShortenerApp:
             shortener = pyshorteners.Shortener()
             service_method = self.services[service_name]["method"]
             
-            # Adiciona timeout explícito
+            # Serviços existentes...
             if service_method == "tinyurl":
                 result = shortener.tinyurl.short(url_original)
             elif service_method == "isgd":
@@ -233,6 +269,46 @@ class URLShortenerApp:
                     result = shortener.gitio.short(url_original)
                 else:
                     raise Exception("Git.io só funciona com URLs do GitHub")
+            
+            # NOVOS SERVIÇOS ADICIONADOS:
+            elif service_method == "shrturi":
+                result = shortener.shrturi.short(url_original)
+            elif service_method == "cleanuri":
+                result = shortener.cleanuri.short(url_original)
+            elif service_method == "shortest":
+                result = shortener.shortest.short(url_original)
+            elif service_method == "tly":
+                result = shortener.tly.short(url_original)
+            elif service_method == "picsee":
+                result = shortener.picsee.short(url_original)
+            elif service_method == "kutt":
+                result = shortener.kutt.short(url_original)
+            elif service_method == "zws":
+                result = shortener.zws.short(url_original)
+            elif service_method == "tinycc":
+                result = shortener.tinycc.short(url_original)
+            elif service_method == "shorturl":
+                result = shortener.shorturl.short(url_original)
+            elif service_method == "vgd":
+                result = shortener.vgd.short(url_original)
+            elif service_method == "smallsx":
+                result = shortener.smallsx.short(url_original)
+            elif service_method == "linksx":
+                result = shortener.linksx.short(url_original)
+            elif service_method == "hmmsx":
+                result = shortener.hmmsx.short(url_original)
+            elif service_method == "ptysx":
+                result = shortener.ptysx.short(url_original)
+            elif service_method == "sqzk":
+                result = shortener.sqzk.short(url_original)
+            elif service_method == "cuttly":
+                self.add_status_message("⏭️ Cutt.ly precisa de API key")
+                return None
+            elif service_method == "bitly":
+                self.add_status_message("⏭️ Bit.ly precisa de API key")
+                return None
+            elif service_method == "adfly":
+                result = shortener.adfly.short(url_original)
             else:
                 result = shortener.tinyurl.short(url_original)
             
@@ -242,7 +318,7 @@ class URLShortenerApp:
             else:
                 self.add_status_message(f"✗ {service_name} retornou resultado inválido")
                 return None
-                
+            
         except Exception as e:
             error_msg = str(e)
             if "403" in error_msg or "blocked" in error_msg.lower():
